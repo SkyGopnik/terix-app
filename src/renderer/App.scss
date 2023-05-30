@@ -1,0 +1,21 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@import "renderer/style/reset";
+@import "renderer/style/fonts";
+@import "renderer/style/colors";
+@import "renderer/style/selection";
+@import "renderer/style/scrollbar";
+@import "renderer/style/tooltip";
+
+body {
+
+  width: 100vw;
+  height: 100vh;
+
+  font-family: 'Manrope', sans-serif;
+
+  background: #FFFFFF;
+
+}

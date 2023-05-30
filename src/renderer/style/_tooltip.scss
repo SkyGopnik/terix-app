@@ -1,0 +1,17 @@
+.styles-module_tooltip__mnnfp {
+  visibility: unset !important;
+
+  opacity: 0 !important;
+  transform: scale(.8) !important;
+
+  transition-property: transform, opacity !important;
+  transition-duration: .3s !important;
+  transition-timing-function: cubic-bezier(.54, 1.5, .38, 1.11) !important;
+
+  will-change: unset !important;
+}
+
+.styles-module_show__2NboJ {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}

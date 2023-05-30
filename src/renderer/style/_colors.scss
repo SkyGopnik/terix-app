@@ -1,0 +1,9 @@
+:root {
+  --section-divider: #1F1F1F;
+
+  --hover-transition-duration: .3s;
+  --hover-transition-function: ease;
+
+  --filter-icon-default: brightness(0) saturate(100%) invert(69%) sepia(5%) saturate(0%) hue-rotate(240deg) brightness(94%) contrast(90%);
+  --filter-icon-hover: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(105deg) brightness(103%) contrast(101%);
+}
