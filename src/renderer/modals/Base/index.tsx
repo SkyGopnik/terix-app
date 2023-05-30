@@ -3,8 +3,6 @@ import { DivProps } from "react-html-props";
 
 import { classNames } from "renderer/utils/classNames";
 
-import IconClose from "/assets/icons/close.svg";
-
 import style from "./index.module.scss";
 
 export interface ModalProps extends DivProps {
@@ -49,10 +47,11 @@ export default function ModalBase(props: ModalProps) {
   }, []);
 
   return (
-    <div className={classNames(
-      style.wrapper,
-      !isVisible && style.wrapperHidden
-    )}
+    <div
+      className={classNames(
+        style.wrapper,
+        !isVisible && style.wrapperHidden
+      )}
     >
       <div
         className={classNames(
@@ -71,12 +70,12 @@ export default function ModalBase(props: ModalProps) {
           <div className={style.closeActions}>
 
             <div className={style.closeActions__iconWrapper}>
-              <img
-                className={style.closeActions__icon}
-                src={IconClose}
-                alt=""
-                onClick={onClose}
-              />
+              {/*<img*/}
+              {/*  className={style.closeActions__icon}*/}
+              {/*  src={IconClose}*/}
+              {/*  alt=""*/}
+              {/*  onClick={onClose}*/}
+              {/*/>*/}
             </div>
 
           </div>
