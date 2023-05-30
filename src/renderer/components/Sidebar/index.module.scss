@@ -40,6 +40,8 @@
 
         cursor: pointer;
 
+        color: #FFFFFF;
+
         &::before {
           width: calc(100% + 8px * 2);
           height: calc(100% + 12px * 2);

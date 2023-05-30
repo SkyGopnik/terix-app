@@ -5,10 +5,13 @@ import SftpIcon from "@icons/sftp.svg";
 import HistoryIcon from "@icons/history.svg";
 
 import style from "./index.module.scss";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Sidebar({ children }: {
   children: ReactNode
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className={style.layout}>
       <div className={style.sidebar}>
@@ -16,14 +19,14 @@ export default function Sidebar({ children }: {
           Terix
         </div>
         <div className={style.sidebar__menu}>
-          <div className={style.menu__item}>
+          <Link className={style.menu__item} to="/">
             <img src={HostsIcon} alt="" />
             <span>Hosts</span>
-          </div>
-          <div className={style.menu__item}>
+          </Link>
+          <Link className={style.menu__item} to="/ssh">
             <img src={SftpIcon} alt="" />
             <span>SFTP</span>
-          </div>
+          </Link>
           <div className={style.menu__item}>
             <img src={HistoryIcon} alt="" />
             <span>History</span>
