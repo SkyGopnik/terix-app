@@ -1,5 +1,3 @@
-$padding: 16px;
-
 .wrapper {
   width: 100vw;
   height: 100vh;
@@ -9,10 +7,10 @@ $padding: 16px;
   left: 0;
 
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
 
-  transition: visibility .3s ease, background-color .2s ease;
+  transition: visibility .3s ease, opacity .3s ease;
 
   z-index: 1000;
 
@@ -20,16 +18,17 @@ $padding: 16px;
 
   &Hidden {
     visibility: hidden;
-
-    background: rgba(#191919, 0);
+    opacity: 0;
   }
 
 }
 
 .baseModal {
-  width: 510px;
+  width: 350px;
 
   max-height: 100%;
+
+  padding: 20px;
 
   border: 1px solid #2d2d2d;
   border-radius: 12px;
@@ -38,7 +37,7 @@ $padding: 16px;
 
   opacity: 1;
 
-  background: #181818;
+  background: #FFFFFF;
 
   &Hidden {
     opacity: 0;
@@ -47,27 +46,28 @@ $padding: 16px;
   .header {
     width: 100%;
 
-    padding: $padding;
+    position: relative;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-    border-bottom: 1px solid #1F1F1F;
+    justify-content: center;
 
     &__title {
-      font-family: Inter, sans-serif;
       font-weight: 700;
       font-size: 18px;
+      line-height: 20px;
 
-      color: #FFFFFF;
+      color: #000000;
     }
 
     .closeActions {
+      position: absolute;
+      right: 0;
+
       display: flex;
       gap: 8px;
 
-      &__iconWrapper {
+      &__icon {
         width: 20px;
         height: 20px;
 
@@ -75,14 +75,12 @@ $padding: 16px;
         align-items: center;
         justify-content: center;
 
+        transition: opacity .3s ease;
+
         cursor: pointer;
 
-        filter: var(--filter-icon-default);
-
-        transition: filter var(--hover-transition-duration) var(--hover-transition-function);
-
         &:hover {
-          filter: var(--filter-icon-hover);
+          opacity: .7;
         }
       }
 
@@ -93,27 +91,7 @@ $padding: 16px;
   .content {
     width: 100%;
 
-    max-height: calc(80vh - 60px - 65px);
-
-    padding: $padding;
-
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-
-    overflow-y: auto;
-  }
-
-  .footer {
-    width: 100%;
-
-    padding: $padding;
-
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    border-top: 1px solid #1F1F1F;
+    margin-top: 30px;
   }
 
 }

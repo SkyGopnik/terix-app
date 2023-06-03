@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useModalClose } from "renderer/hooks/modals";
 
 import ModalBase from "renderer/modals/Base";
+import Input from "renderer/ui/Input";
 
 import style from "./index.module.scss";
+import Button from "renderer/ui/Button";
 
 interface IProps {
   isVisible: boolean;
@@ -18,31 +20,15 @@ export default function CreateGroup(props: IProps) {
 
   return (
     <ModalBase
-      className={style.createEnvironment}
+      className={style.createGroup}
       title="Создание группы"
       isVisible={isVisible}
-      buttons={(
-        <>
-          {/*<Button*/}
-          {/*  kind="primary"*/}
-          {/*  isLoading={isLoading}*/}
-          {/*  disabled={isLoading}*/}
-          {/*  onClick={onSubmit}*/}
-          {/*>*/}
-          {/*  Save*/}
-          {/*</Button>*/}
-          {/*<Button*/}
-          {/*  kind="secondary"*/}
-          {/*  disabled={isLoading}*/}
-          {/*  onClick={close}*/}
-          {/*>*/}
-          {/*  Close*/}
-          {/*</Button>*/}
-        </>
-      )}
       onClose={close}
     >
-      1
+      <Input caption="Название" />
+      <div className={style.createGroup__action}>
+        <Button>Создать</Button>
+      </div>
     </ModalBase>
   );
 }

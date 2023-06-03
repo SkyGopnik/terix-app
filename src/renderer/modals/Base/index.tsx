@@ -3,6 +3,8 @@ import { DivProps } from "react-html-props";
 
 import { classNames } from "renderer/utils/classNames";
 
+import CloseIcon from "@icons/close.svg";
+
 import style from "./index.module.scss";
 
 export interface ModalProps extends DivProps {
@@ -10,7 +12,6 @@ export interface ModalProps extends DivProps {
   title: string;
 
   isVisible: boolean;
-  buttons?: JSX.Element;
 
   onClose(): void
 
@@ -22,12 +23,10 @@ export default function ModalBase(props: ModalProps) {
     title,
     isVisible,
     children,
-    buttons,
     onClose
   } = props;
 
   useEffect(() => {
-
     const closeListener = (event: KeyboardEvent) => {
 
       const { code } = event;
@@ -68,26 +67,18 @@ export default function ModalBase(props: ModalProps) {
           </h2>
 
           <div className={style.closeActions}>
-
-            <div className={style.closeActions__iconWrapper}>
-              {/*<img*/}
-              {/*  className={style.closeActions__icon}*/}
-              {/*  src={IconClose}*/}
-              {/*  alt=""*/}
-              {/*  onClick={onClose}*/}
-              {/*/>*/}
-            </div>
-
+            <img
+              className={style.closeActions__icon}
+              src={CloseIcon}
+              alt=""
+              onClick={onClose}
+            />
           </div>
 
         </div>
 
         <div className={style.content}>
           {children}
-        </div>
-
-        <div className={style.footer}>
-          {buttons}
         </div>
 
       </div>

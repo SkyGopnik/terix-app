@@ -1,0 +1,29 @@
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  cursor: text;
+
+  &__caption {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+
+    color: #000000;
+  }
+
+  &__field {
+    padding: 12px 14px;
+
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+
+    outline: none;
+    border: none;
+    border-radius: 6px;
+
+    background: #F2F2F2;
+  }
+}
