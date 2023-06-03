@@ -7,10 +7,12 @@ import CreatehostPlaceholder from "@images/createhost_placeholder.png";
 import style from "./index.module.scss";
 import { useState } from "react";
 import CreateGroup from "renderer/modals/CreateGroup";
+import CreateConnection from "renderer/modals/CreateConnection";
 
 export default function MainPage() {
 
   const [createGroupVisible, setCreateGroupVisible] = useState(false);
+  const [createConnectionVisible, setCreateConnectionVisible] = useState(false);
 
   return (
     <>
@@ -21,7 +23,10 @@ export default function MainPage() {
           placeholder="Поиск"
         />
         <div className={style.actions}>
-          <button className={style.actions__item}>
+          <button
+            className={style.actions__item}
+            onClick={() => setCreateConnectionVisible(true)}
+          >
             <img src={HostIcon} alt="" />
             <span>Соединение</span>
           </button>
@@ -84,6 +89,10 @@ export default function MainPage() {
       <CreateGroup
         isVisible={createGroupVisible}
         onClose={() => setCreateGroupVisible(false)}
+      />
+      <CreateConnection
+        isVisible={createConnectionVisible}
+        onClose={() => setCreateConnectionVisible(false)}
       />
     </>
   );
