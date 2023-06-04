@@ -9,6 +9,15 @@ const electronHandler = {
 
     openLink: (url: string) => {
       ipcRenderer.send(IpcChannels.app.openLink, url);
+    },
+
+    connectSSH() {
+      return ipcRenderer.invoke(IpcChannels.app.connectSSH);
+    },
+
+
+    sshExecute(command: string): Promise<string> {
+      return ipcRenderer.invoke(IpcChannels.app.sshExecute, command);
     }
 
   }
