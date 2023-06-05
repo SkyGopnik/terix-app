@@ -1,3 +1,4 @@
+import { SnackbarProvider } from "notistack";
 import { createRoot } from "react-dom/client";
 
 import axios from "axios";
@@ -19,11 +20,18 @@ const root = createRoot(container);
 
 root.render(
   <Providers>
-    <SkeletonTheme
-      baseColor="#262626"
-      highlightColor="#343434"
+    <SnackbarProvider
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
     >
-      <App />
-    </SkeletonTheme>
+      <SkeletonTheme
+        baseColor="#262626"
+        highlightColor="#343434"
+      >
+        <App />
+      </SkeletonTheme>
+    </SnackbarProvider>
   </Providers>
 );

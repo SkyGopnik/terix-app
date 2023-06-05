@@ -46,9 +46,9 @@ export default function ModalBase(props: ModalProps) {
   }, []);
 
   const test = async () => {
-    await window.electron.app.connectSSH();
-
-      console.log(await window.electron.app.sshExecute('ls'));
+    // await window.electron.app.connectSSH();
+    //
+    //   console.log(await window.electron.app.sshExecute('ls'));
   };
 
   return (

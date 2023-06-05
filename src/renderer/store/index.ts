@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 
-import { environmentsReducer } from "renderer/store/reducers/environments/slice";
+import { groupsReducer } from "renderer/store/reducers/groups/slice";
 
 const rootReducer = combineReducers({
-  environmentsReducer
+  groupsReducer
 });
 
 export const setupStore = () => {
