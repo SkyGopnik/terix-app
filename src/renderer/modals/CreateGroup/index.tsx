@@ -8,8 +8,9 @@ import Input from "renderer/ui/Input";
 
 import style from "./index.module.scss";
 import { enqueueSnackbar } from "notistack";
-import { useAppDispatch } from "renderer/hooks/redux";
+import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { groupsSlice } from "renderer/store/reducers/groups/slice";
+import { findIndex } from "lodash";
 
 interface IProps {
   isVisible: boolean;
@@ -19,6 +20,8 @@ interface IProps {
 export default function CreateGroup(props: IProps) {
 
   const { isVisible, onClose } = props;
+
+  const { groups } = useAppSelector((state) => state.groupsReducer);
 
   const dispatch = useAppDispatch();
 
@@ -30,6 +33,17 @@ export default function CreateGroup(props: IProps) {
     if (name.length === 0) {
       enqueueSnackbar({
         message: "Название обязательно для заполнения",
+        variant: "error"
+      });
+
+      return;
+    }
+
+    const groupIndex = findIndex(groups, { name });
+
+    if (groupIndex !== -1) {
+      enqueueSnackbar({
+        message: "Такая группа уже существует",
         variant: "error"
       });
 

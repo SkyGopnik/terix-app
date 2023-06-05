@@ -100,10 +100,6 @@
 
       background: #f6f5f5;
 
-      &:hover {
-        opacity: .7;
-      }
-
       .groupItem {
         &__icon {
           width: 28px;
@@ -131,6 +127,34 @@
           line-height: 12px;
 
           color: #a9a7a7;
+        }
+
+        &__action {
+          margin-left: auto;
+          padding: 6px;
+
+          border-radius: 8px;
+
+          opacity: 0;
+
+          transition: opacity .3s ease;
+
+          background: #eaeaea;
+
+          img {
+            width: 16px;
+            height: 16px;
+          }
+        }
+      }
+
+      &:hover {
+        opacity: .7;
+
+        .groupItem {
+          &__action {
+            opacity: 1;
+          }
         }
       }
     }

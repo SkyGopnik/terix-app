@@ -2,9 +2,11 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 import { groupsReducer } from "renderer/store/reducers/groups/slice";
+import { connectionReducer } from "renderer/store/reducers/connection/slice";
 
 const rootReducer = combineReducers({
-  groupsReducer
+  groupsReducer,
+  connectionReducer
 });
 
 export const setupStore = () => {

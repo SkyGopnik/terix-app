@@ -90,11 +90,16 @@ export function useZodValidation<TSchema extends ZodType>(
   formErrors: ZodFormErrors<TSchema>,
   setFormErrors: (errors: ZodFormErrors<TSchema>) => void
 ) {
-  return (...fieldNames: string[]): boolean => {
+  return (...fieldNames: string[]): {
+    isValid: boolean,
+    errors?: ZodFormErrors<TSchema>
+  } => {
 
     const result = schema.safeParse(formData);
     if (result.success) {
-      return true;
+      return {
+        isValid: true
+      };
     }
 
     const zodErrors = result.error.flatten().fieldErrors;
@@ -111,6 +116,9 @@ export function useZodValidation<TSchema extends ZodType>(
       });
     }
 
-    return false;
+    return {
+      isValid: false,
+      errors: mappedErrors
+    };
   };
 }

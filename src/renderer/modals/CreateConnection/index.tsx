@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import style from "./index.module.scss";
 import { useZodForm } from "renderer/hooks/zod";
 import { enqueueSnackbar } from "notistack";
+import { groupsSlice } from "renderer/store/reducers/groups/slice";
+import { findIndex } from "lodash";
 
 interface IProps {
   isVisible: boolean;
@@ -47,13 +49,14 @@ export default function CreateConnection(props: IProps) {
 
   const {
     formData,
-    formErrors,
     validateForm,
+    clearForm,
     onInputChange,
-    onSelectChange
+    onSelectChange,
+    onInputBlur
   } = useZodForm(schema, {
     label: "",
-    group: groups[0]?.name || "",
+    group: "",
     host: "",
     port: 22,
     login: "",
@@ -62,20 +65,22 @@ export default function CreateConnection(props: IProps) {
 
   const dispatch = useAppDispatch();
 
-  const close = useModalClose(() => {}, onClose);
+  const close = useModalClose(clearForm, onClose);
 
   const createConnection = () => {
-    const isValid = validateForm();
+    const validate = validateForm();
 
-    if (!isValid) {
-      (Object.keys(formErrors) as Array<keyof typeof formErrors>).map((key) => {
+    if (!validate.isValid) {
+      const errors = validate.errors!;
 
-        if (!formErrors[key]) {
+      (Object.keys(errors) as Array<keyof typeof errors>).map((key) => {
+
+        if (!errors[key]) {
           return;
         }
 
         enqueueSnackbar({
-          message: formErrors[key],
+          message: errors[key],
           variant: "error"
         });
 
@@ -83,6 +88,15 @@ export default function CreateConnection(props: IProps) {
 
       return;
     }
+
+    const groupIndex = findIndex(groups, { name: formData.group });
+
+    dispatch(groupsSlice.actions.addConnection({
+      groupIndex: groupIndex!,
+      data: formData
+    }));
+
+    close();
   };
 
   return (
@@ -99,16 +113,17 @@ export default function CreateConnection(props: IProps) {
           value={formData.label}
           placeholder="Pixefy"
           onChange={onInputChange}
+          onBlur={onInputBlur}
         />
         <Select
           caption="Группа"
           name="group"
           value={formData.group}
-          placeholder="Главный сервер"
           onChange={onSelectChange}
         >
+          <option value="" disabled>Выберите группу</option>
           {groups.map((item) => (
-            <option>{item.name}</option>
+            <option key={item.name} value={item.name}>{item.name}</option>
           ))}
         </Select>
       </div>
@@ -120,6 +135,7 @@ export default function CreateConnection(props: IProps) {
           value={formData.host}
           placeholder="127.0.0.1"
           onChange={onInputChange}
+          onBlur={onInputBlur}
         />
         <Input
           caption="Порт"
@@ -127,6 +143,7 @@ export default function CreateConnection(props: IProps) {
           value={formData.port}
           placeholder="25565"
           onChange={onInputChange}
+          onBlur={onInputBlur}
         />
         <Input
           caption="Пользователь"
@@ -134,6 +151,7 @@ export default function CreateConnection(props: IProps) {
           value={formData.login}
           placeholder="root"
           onChange={onInputChange}
+          onBlur={onInputBlur}
         />
         <Input
           caption="Пароль"
@@ -142,6 +160,7 @@ export default function CreateConnection(props: IProps) {
           value={formData.password}
           placeholder="..."
           onChange={onInputChange}
+          onBlur={onInputBlur}
         />
       </div>
       <div className={style.createGroup__action}>

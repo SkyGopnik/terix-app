@@ -1,0 +1,48 @@
+.console {
+  height: 100vh;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  font-weight: 400;
+
+  color: rgba(#4AF626, .85);
+  background: #242454;
+
+  &Message {
+    white-space: pre-line;
+
+    font-weight: 400;
+
+    overflow-y: auto;
+  }
+
+  &Writebar {
+    margin-top: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .writebar {
+      &__placeholder {
+        font-weight: 500;
+
+        span {
+          color: #6d6dcc;
+        }
+      }
+
+      &__input {
+        width: 100%;
+
+        outline: none;
+        border: none;
+      }
+    }
+  }
+}

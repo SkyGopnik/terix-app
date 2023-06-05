@@ -10,20 +10,18 @@ ipcMain.on("app:open_link", (_, link) => {
     });
 });
 
-ipcMain.handle("ssh:connect", async () => {
+ipcMain.handle("ssh:connect", async (_, { host, port, login, password }) => {
   await ssh.connect({
-    host: '188.120.225.57',
-    port: 22,
-    username: 'admin',
-    password: 'g7oUNAK6Xn'
+    host,
+    port,
+    username: login,
+    password
   });
 });
 
 ipcMain.handle("ssh:execute", async (_, command) => {
   const result = await ssh.execCommand(command);
 
-  console.log(result);
-
-  return result.stdout;
+  return result.stdout || result.stderr;
 });
 

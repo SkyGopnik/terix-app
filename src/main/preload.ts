@@ -11,8 +11,8 @@ const electronHandler = {
       ipcRenderer.send(IpcChannels.app.openLink, url);
     },
 
-    connectSSH() {
-      return ipcRenderer.invoke(IpcChannels.app.connectSSH);
+    connectSSH(host: string, port: number, login: string, password: string) {
+      return ipcRenderer.invoke(IpcChannels.app.connectSSH, { host, port, login, password });
     },
 
 
