@@ -1,21 +1,23 @@
+import { ConnectionI } from "renderer/types/connection";
 import { z } from "zod";
-import React, { useState } from "react";
-import { useModalClose } from "renderer/hooks/modals";
+import { findIndex } from "lodash";
+import React, { useEffect, useState } from "react";
+import { enqueueSnackbar } from "notistack";
 
+import { useModalClose } from "renderer/hooks/modals";
 import ModalBase from "renderer/modals/Base";
 import Select from "renderer/ui/Select";
 import Button from "renderer/ui/Button";
 import Input from "renderer/ui/Input";
 
+import { useZodForm } from "renderer/hooks/zod";
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
+import { groupsSlice } from "renderer/store/reducers/groups/slice";
 
 import style from "./index.module.scss";
-import { useZodForm } from "renderer/hooks/zod";
-import { enqueueSnackbar } from "notistack";
-import { groupsSlice } from "renderer/store/reducers/groups/slice";
-import { findIndex } from "lodash";
 
 interface IProps {
+  data?: ConnectionI,
   isVisible: boolean;
   onClose(): void
 }
@@ -48,6 +50,7 @@ export default function CreateConnection(props: IProps) {
   const { groups } = useAppSelector((state) => state.groupsReducer);
 
   const {
+    setFormData,
     formData,
     validateForm,
     clearForm,
@@ -66,6 +69,13 @@ export default function CreateConnection(props: IProps) {
   const dispatch = useAppDispatch();
 
   const close = useModalClose(clearForm, onClose);
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      ...props.data
+    });
+  }, [props.data]);
 
   const createConnection = () => {
     const validate = validateForm();

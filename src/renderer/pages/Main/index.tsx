@@ -26,6 +26,8 @@ export default function MainPage() {
   const dispatch = useAppDispatch();
 
   const [createGroupVisible, setCreateGroupVisible] = useState(false);
+
+  const [editConnectionData, setEditConnectionData] = useState<ConnectionI>();
   const [createConnectionVisible, setCreateConnectionVisible] = useState(false);
 
   const connectSSH = async (connection: ConnectionI) => {
@@ -42,6 +44,13 @@ export default function MainPage() {
     ]);
 
     await navigate("/console");
+  };
+
+  const editConnection = async (e: React.MouseEvent<HTMLDivElement>, connection: ConnectionI) => {
+    e.stopPropagation();
+
+    await setEditConnectionData(connection);
+    setCreateConnectionVisible(true);
   };
 
   return (
@@ -88,7 +97,10 @@ export default function MainPage() {
                           <div className={style.groupItem__name}>{connection.label}</div>
                           <div className={style.groupItem__description}>shh, {connection.login}</div>
                         </div>
-                        <div className={style.groupItem__action}>
+                        <div
+                          className={style.groupItem__action}
+                          onClick={(e) => editConnection(e, connection)}
+                        >
                           <img src={EditIcon} alt="" />
                         </div>
                       </div>
@@ -120,8 +132,12 @@ export default function MainPage() {
         onClose={() => setCreateGroupVisible(false)}
       />
       <CreateConnection
+        data={editConnectionData}
         isVisible={createConnectionVisible}
-        onClose={() => setCreateConnectionVisible(false)}
+        onClose={async () => {
+          await setCreateConnectionVisible(false);
+          setEditConnectionData(undefined);
+        }}
       />
     </>
   );
