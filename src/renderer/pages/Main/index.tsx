@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import HostIcon from "@icons/host.svg";
@@ -31,10 +31,7 @@ export default function MainPage() {
   const [createConnectionVisible, setCreateConnectionVisible] = useState(false);
 
   const connectSSH = async (connection: ConnectionI) => {
-    const { host, port, login, password } = connection;
-
     await Promise.all([
-      window.electron.app.connectSSH(host, port, login, password),
       dispatch(connectionSlice.actions.addConnection({
         ...connection,
         messages: "",
@@ -65,7 +62,10 @@ export default function MainPage() {
           {groups.length !== 0 && (
             <button
               className={style.actions__item}
-              onClick={() => setCreateConnectionVisible(true)}
+              onClick={async () => {
+                await setEditConnectionData(undefined);
+                setCreateConnectionVisible(true);
+              }}
             >
               <img src={HostIcon} alt="" />
               <span>Соединение</span>
@@ -85,7 +85,7 @@ export default function MainPage() {
               <div className={style.groups__item} key={group.name + index}>
                 <div className={style.groups__caption}>{group.name}</div>
                 <div className={style.groups__list}>
-                  {group.connections ? (
+                  {group.connections.length !== 0 ? (
                     group.connections.map((connection) => (
                       <div
                         className={style.group__item}
@@ -134,10 +134,7 @@ export default function MainPage() {
       <CreateConnection
         data={editConnectionData}
         isVisible={createConnectionVisible}
-        onClose={async () => {
-          await setCreateConnectionVisible(false);
-          setEditConnectionData(undefined);
-        }}
+        onClose={() => setCreateConnectionVisible(false)}
       />
     </>
   );

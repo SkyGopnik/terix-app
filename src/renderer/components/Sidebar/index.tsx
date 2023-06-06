@@ -1,19 +1,17 @@
 import React, { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
+import { connectionSlice } from "renderer/store/reducers/connection/slice";
+import { classNames } from "renderer/utils/classNames";
+
 import HostsIcon from "@icons/hosts.svg";
 import SftpIcon from "@icons/sftp.svg";
 import HistoryIcon from "@icons/history.svg";
 import ActiveHostIcon from "@icons/active_host.svg";
 import RemoveIcon from "@icons/close.svg";
 
-import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
-import { connectionSlice } from "renderer/store/reducers/connection/slice";
-
-import { ConnectionI } from "renderer/types/connection";
-
 import style from "./index.module.scss";
-import { classNames } from "renderer/utils/classNames";
 
 export default function Sidebar({ children }: {
   children: ReactNode
@@ -24,13 +22,8 @@ export default function Sidebar({ children }: {
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
 
-  const connectSSH = async (index: number, connection: ConnectionI) => {
-    const { host, port, login, password } = connection;
-
-    await Promise.all([
-      window.electron.app.connectSSH(host, port, login, password),
-      dispatch(connectionSlice.actions.changeActiveConnection(index))
-    ]);
+  const connectSSH = async (index: number) => {
+    await dispatch(connectionSlice.actions.changeActiveConnection(index));
 
     await navigate("/console");
   };
@@ -75,7 +68,7 @@ export default function Sidebar({ children }: {
                 (checkActive("/console") && index === activeConnection) && style.menu__itemActve
               )}
               key={item.label + index}
-              onClick={() => connectSSH(index, item)}
+              onClick={() => connectSSH(index)}
             >
               <img src={ActiveHostIcon} alt="" />
               <span>{item.label} <span className={style.menuItem__small}>{item.login}</span></span>

@@ -22,6 +22,8 @@ ipcMain.handle("ssh:connect", async (_, { host, port, login, password }) => {
 ipcMain.handle("ssh:execute", async (_, command) => {
   const result = await ssh.execCommand(command);
 
+  // console.log(result);
+
   return result.stdout || result.stderr;
 });
 

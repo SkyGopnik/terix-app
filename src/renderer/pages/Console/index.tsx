@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
@@ -12,6 +12,7 @@ export default function ConsolePage() {
   const { activeConnection, history } = useAppSelector((state) => state.connectionReducer);
 
   const [command, setCommand] = useState("");
+  const console = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -24,9 +25,21 @@ export default function ConsolePage() {
       return;
     }
 
+    const { host, port, login, password } = history[activeConnection];
+
+    await window.electron.app.connectSSH(host, port, login, password);
+
     const data = await window.electron.app.sshExecute("run-parts /etc/update-motd.d/");
     dispatch(connectionSlice.actions.addMessage({ index: activeConnection, data }))
   }, []);
+
+  useEffect(() => {
+    if (!console?.current) {
+      return;
+    }
+
+    console.current.scrollTop = console.current.scrollHeight;
+  }, [history[activeConnection!]]);
 
   const onKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") {
@@ -47,7 +60,7 @@ export default function ConsolePage() {
 
   return (
     <div className={style.console}>
-      <div className={style.consoleMessage}>
+      <div className={style.consoleMessage} ref={console}>
         {connection.messages}
       </div>
       <label className={style.consoleWritebar}>

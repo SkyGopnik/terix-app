@@ -17,4 +17,10 @@
   &:hover {
     opacity: .7;
   }
+
+  &Appearance {
+    &_destructive {
+      background: #ce3f3f;
+    }
+  }
 }

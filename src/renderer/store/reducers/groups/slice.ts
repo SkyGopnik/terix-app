@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { GroupI } from "renderer/types/groups";
 import { ConnectionI } from "renderer/types/connection";
+import { date } from "zod";
+import { findIndex } from "lodash";
 
 interface GroupsState {
   groups: Array<GroupI>
@@ -23,7 +25,10 @@ export const groupsSlice = createSlice({
     add(state, action: PayloadAction<GroupI>) {
       state.groups = [
         ...state.groups,
-        action.payload
+        {
+          ...action.payload,
+          connections: []
+        }
       ];
     },
 
@@ -45,7 +50,43 @@ export const groupsSlice = createSlice({
         ...group.connections || [],
         action.payload.data
       ];
-    }
+    },
+
+    editConnection(state, action: PayloadAction<{ groupIndex: number, connectionIndex: number, data: ConnectionI }>) {
+      const { groupIndex, connectionIndex, data } = action.payload;
+
+      const group = state.groups[groupIndex];
+      const { connections } = group;
+
+      if (!connections) {
+        return;
+      }
+
+      if (!connections[connectionIndex]) {
+        return;
+      }
+
+      connections[connectionIndex] = data;
+    },
+
+    removeConnection(state, action: PayloadAction<{ groupIndex: number, id: string }>) {
+      const { groupIndex, id } = action.payload;
+
+      const group = state.groups[groupIndex];
+      const { connections } = group;
+
+      if (!connections) {
+        return;
+      }
+
+      const connectionIndex = findIndex(connections, { id });
+
+      if (!connections[connectionIndex]) {
+        return;
+      }
+
+      group.connections!.splice(connectionIndex, 1);
+    },
 
   }
 });

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { v4 as randomUUID } from "uuid";
 
 import { useModalClose } from "renderer/hooks/modals";
 
@@ -51,6 +52,7 @@ export default function CreateGroup(props: IProps) {
     }
 
     dispatch(groupsSlice.actions.add({
+      id: randomUUID(),
       name
     }));
 

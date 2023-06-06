@@ -1,7 +1,7 @@
-import { ConnectionI } from "renderer/types/connection";
 import { z } from "zod";
-import { findIndex } from "lodash";
-import React, { useEffect, useState } from "react";
+import { find, findIndex } from "lodash";
+import { v4 as randomUUID } from "uuid";
+import React, { useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
 
 import { useModalClose } from "renderer/hooks/modals";
@@ -13,6 +13,8 @@ import Input from "renderer/ui/Input";
 import { useZodForm } from "renderer/hooks/zod";
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { groupsSlice } from "renderer/store/reducers/groups/slice";
+
+import { ConnectionI } from "renderer/types/connection";
 
 import style from "./index.module.scss";
 
@@ -27,7 +29,7 @@ const schema = z.object({
   label: z.string()
     .nonempty("Введите название"),
 
-  group: z.string()
+  groupId: z.string()
     .nonempty("Выберите группу"),
 
   host: z.string()
@@ -49,6 +51,8 @@ export default function CreateConnection(props: IProps) {
 
   const { groups } = useAppSelector((state) => state.groupsReducer);
 
+  const isUpdate = !!props.data;
+
   const {
     setFormData,
     formData,
@@ -59,7 +63,7 @@ export default function CreateConnection(props: IProps) {
     onInputBlur
   } = useZodForm(schema, {
     label: "",
-    group: "",
+    groupId: "",
     host: "",
     port: 22,
     login: "",
@@ -68,11 +72,13 @@ export default function CreateConnection(props: IProps) {
 
   const dispatch = useAppDispatch();
 
-  const close = useModalClose(clearForm, onClose);
-
   useEffect(() => {
+    if (!props.data) {
+      clearForm();
+      return;
+    }
+
     setFormData({
-      ...formData,
       ...props.data
     });
   }, [props.data]);
@@ -99,20 +105,46 @@ export default function CreateConnection(props: IProps) {
       return;
     }
 
-    const groupIndex = findIndex(groups, { name: formData.group });
+    const groupIndex = findIndex(groups, { id: formData.groupId });
 
-    dispatch(groupsSlice.actions.addConnection({
-      groupIndex: groupIndex!,
-      data: formData
-    }));
+    if (isUpdate) {
+      const connectionIndex = findIndex(groups[groupIndex].connections, { id: props.data?.id });
 
-    close();
+      dispatch(groupsSlice.actions.editConnection({
+        groupIndex,
+        connectionIndex,
+        data: {
+          ...props.data!,
+          ...formData
+        }
+      }));
+    } else {
+      dispatch(groupsSlice.actions.addConnection({
+        groupIndex: groupIndex!,
+        data: {
+          id: randomUUID(),
+          ...formData
+        }
+      }));
+
+      clearForm();
+    }
+
+    onClose();
+  };
+
+  const removeConnection = () => {
+    const groupIndex = findIndex(groups, { id: formData.groupId });
+
+    dispatch(groupsSlice.actions.removeConnection({ groupIndex, id: props.data!.id }));
+
+    onClose();
   };
 
   return (
     <ModalBase
       className={style.createGroup}
-      title="Создание соединения"
+      title={`${isUpdate ? "Изменение" : "Создание"} соединения`}
       isVisible={isVisible}
       onClose={close}
     >
@@ -127,13 +159,13 @@ export default function CreateConnection(props: IProps) {
         />
         <Select
           caption="Группа"
-          name="group"
-          value={formData.group}
+          name="groupId"
+          value={formData.groupId}
           onChange={onSelectChange}
         >
           <option value="" disabled>Выберите группу</option>
           {groups.map((item) => (
-            <option key={item.name} value={item.name}>{item.name}</option>
+            <option key={item.id} value={item.id}>{item.name}</option>
           ))}
         </Select>
       </div>
@@ -174,7 +206,10 @@ export default function CreateConnection(props: IProps) {
         />
       </div>
       <div className={style.createGroup__action}>
-        <Button onClick={createConnection}>Создать</Button>
+        <Button onClick={createConnection}>{isUpdate ? "Изменить" : "Создать"}</Button>
+        {isUpdate && (
+          <Button appearance="destructive" onClick={removeConnection}>Удалить</Button>
+        )}
       </div>
     </ModalBase>
   );
