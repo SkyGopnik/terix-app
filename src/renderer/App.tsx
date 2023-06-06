@@ -13,33 +13,37 @@ import { useFirstRender } from "renderer/hooks/useFirstRender";
 import { groupsSlice } from "renderer/store/reducers/groups/slice";
 
 import "./App.scss";
+import { connectionsSlice } from "renderer/store/reducers/connections/slice";
 
 export default function App() {
 
   const { groups } = useAppSelector((state) => state.groupsReducer);
+  const { connections } = useAppSelector((state) => state.connectionsReducer);
 
   const firstRender = useFirstRender();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (firstRender) {
-      const groupsString = localStorage.getItem("groups");
+      const stateString = localStorage.getItem("state");
 
-      if (!groupsString) {
+      if (!stateString) {
         return;
       }
 
-      dispatch(groupsSlice.actions.set(JSON.parse(groupsString) || []));
+      const { groups, connections } = JSON.parse(stateString) || {};
+
+      dispatch(groupsSlice.actions.set(groups));
+      dispatch(connectionsSlice.actions.set(connections));
 
       return;
     }
 
-    if (groups.length === 0) {
-      return;
-    }
-
-    localStorage.setItem("groups", JSON.stringify(groups));
-  }, [groups]);
+    localStorage.setItem("state", JSON.stringify({
+      groups,
+      connections
+    }));
+  }, [groups, connections]);
 
   return (
     <Router>

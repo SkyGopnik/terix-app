@@ -16,15 +16,18 @@ import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import style from "./index.module.scss";
 import { ConnectionI } from "renderer/types/connection";
 import { connectionSlice } from "renderer/store/reducers/connection/slice";
+import { GroupI } from "renderer/types/groups";
 
 export default function MainPage() {
 
   const { history } = useAppSelector((state) => state.connectionReducer);
   const { groups } = useAppSelector((state) => state.groupsReducer);
+  const { connections } = useAppSelector((state) => state.connectionsReducer);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const [editGroupData, setEditGroupData] = useState<GroupI>();
   const [createGroupVisible, setCreateGroupVisible] = useState(false);
 
   const [editConnectionData, setEditConnectionData] = useState<ConnectionI>();
@@ -50,6 +53,17 @@ export default function MainPage() {
     setCreateConnectionVisible(true);
   };
 
+  const editGroup = async (e: React.MouseEvent<HTMLDivElement>, group: GroupI) => {
+    e.stopPropagation();
+
+    await setEditGroupData(group);
+    setCreateGroupVisible(true);
+  };
+
+  const getConnections = (group: GroupI) => {
+    return connections.filter((item) => item.groupId === group.id);
+  };
+
   return (
     <>
       <div className={style.page}>
@@ -73,7 +87,10 @@ export default function MainPage() {
           )}
           <button
             className={style.actions__item}
-            onClick={() => setCreateGroupVisible(true)}
+            onClick={async () => {
+              await setEditGroupData(undefined);
+              setCreateGroupVisible(true);
+            }}
           >
             <img src={GroupIcon} alt="" />
             <span>Группа</span>
@@ -83,10 +100,20 @@ export default function MainPage() {
           {groups.length !== 0 ? (
             groups.map((group, index) => (
               <div className={style.groups__item} key={group.name + index}>
-                <div className={style.groups__caption}>{group.name}</div>
+                <div className={style.groups__header}>
+                  <div className={style.groups__caption}>{group.name}</div>
+                  <div className={style.groups__actions}>
+                    <div
+                      className={style.groups__action}
+                      onClick={(e) => editGroup(e, group)}
+                    >
+                      <img src={EditIcon} alt="" />
+                    </div>
+                  </div>
+                </div>
                 <div className={style.groups__list}>
-                  {group.connections.length !== 0 ? (
-                    group.connections.map((connection) => (
+                  {getConnections(group).length !== 0 ? (
+                    getConnections(group).map((connection) => (
                       <div
                         className={style.group__item}
                         key={group.name + connection.label}
@@ -118,7 +145,10 @@ export default function MainPage() {
                 <img className={style.placeholder__image} src={CreatehostPlaceholder} alt="" />
                 <button
                   className={style.placeholder__button}
-                  onClick={() => setCreateGroupVisible(true)}
+                  onClick={async () => {
+                    await setEditGroupData(undefined);
+                    setCreateGroupVisible(true);
+                  }}
                 >
                   Создать
                 </button>
@@ -128,6 +158,7 @@ export default function MainPage() {
         </div>
       </div>
       <CreateGroup
+        data={editGroupData}
         isVisible={createGroupVisible}
         onClose={() => setCreateGroupVisible(false)}
       />

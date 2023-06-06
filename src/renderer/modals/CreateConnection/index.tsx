@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { find, findIndex } from "lodash";
+import { findIndex } from "lodash";
 import { v4 as randomUUID } from "uuid";
 import React, { useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
 
-import { useModalClose } from "renderer/hooks/modals";
 import ModalBase from "renderer/modals/Base";
 import Select from "renderer/ui/Select";
 import Button from "renderer/ui/Button";
@@ -12,7 +11,7 @@ import Input from "renderer/ui/Input";
 
 import { useZodForm } from "renderer/hooks/zod";
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
-import { groupsSlice } from "renderer/store/reducers/groups/slice";
+import { connectionsSlice } from "renderer/store/reducers/connections/slice";
 
 import { ConnectionI } from "renderer/types/connection";
 
@@ -42,7 +41,6 @@ const schema = z.object({
 
   password: z.string()
     .nonempty("Введите пароль")
-
 });
 
 export default function CreateConnection(props: IProps) {
@@ -50,6 +48,7 @@ export default function CreateConnection(props: IProps) {
   const { isVisible, onClose } = props;
 
   const { groups } = useAppSelector((state) => state.groupsReducer);
+  const { connections } = useAppSelector((state) => state.connectionsReducer);
 
   const isUpdate = !!props.data;
 
@@ -105,26 +104,20 @@ export default function CreateConnection(props: IProps) {
       return;
     }
 
-    const groupIndex = findIndex(groups, { id: formData.groupId });
-
     if (isUpdate) {
-      const connectionIndex = findIndex(groups[groupIndex].connections, { id: props.data?.id });
+      const index = findIndex(connections, { id: props.data?.id });
 
-      dispatch(groupsSlice.actions.editConnection({
-        groupIndex,
-        connectionIndex,
+      dispatch(connectionsSlice.actions.edit({
+        index,
         data: {
           ...props.data!,
           ...formData
         }
       }));
     } else {
-      dispatch(groupsSlice.actions.addConnection({
-        groupIndex: groupIndex!,
-        data: {
-          id: randomUUID(),
-          ...formData
-        }
+      dispatch(connectionsSlice.actions.add({
+        id: randomUUID(),
+        ...formData
       }));
 
       clearForm();
@@ -134,9 +127,9 @@ export default function CreateConnection(props: IProps) {
   };
 
   const removeConnection = () => {
-    const groupIndex = findIndex(groups, { id: formData.groupId });
+    const index = findIndex(connections, { id: props.data?.id });
 
-    dispatch(groupsSlice.actions.removeConnection({ groupIndex, id: props.data!.id }));
+    dispatch(connectionsSlice.actions.remove(index));
 
     onClose();
   };
@@ -146,7 +139,7 @@ export default function CreateConnection(props: IProps) {
       className={style.createGroup}
       title={`${isUpdate ? "Изменение" : "Создание"} соединения`}
       isVisible={isVisible}
-      onClose={close}
+      onClose={onClose}
     >
       <div className={style.createGroup__grid}>
         <Input
@@ -206,10 +199,10 @@ export default function CreateConnection(props: IProps) {
         />
       </div>
       <div className={style.createGroup__action}>
-        <Button onClick={createConnection}>{isUpdate ? "Изменить" : "Создать"}</Button>
         {isUpdate && (
           <Button appearance="destructive" onClick={removeConnection}>Удалить</Button>
         )}
+        <Button onClick={createConnection}>{isUpdate ? "Изменить" : "Создать"}</Button>
       </div>
     </ModalBase>
   );

@@ -1,45 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { ExtendedConnectionI } from "renderer/types/connection";
+import { ConnectionI } from "renderer/types/connection";
+import { GroupI } from "renderer/types/groups";
 
-interface GroupsState {
-  history: Array<ExtendedConnectionI>,
-  activeConnection?: number
+interface ConnectionsState {
+  connections: Array<ConnectionI>
 }
 
-const initialState: GroupsState = {
-  history: []
+const initialState: ConnectionsState = {
+  connections: []
 };
 
-export const connectionSlice = createSlice({
-  name: "connection",
+export const connectionsSlice = createSlice({
+  name: "connections",
   initialState,
   reducers: {
 
-    addConnection(state, action: PayloadAction<ExtendedConnectionI>) {
-      state.history = [...state.history, action.payload];
+    set(state, action: PayloadAction<Array<ConnectionI>>) {
+      state.connections = action.payload;
     },
 
-    removeConnection(state, action: PayloadAction<number>) {
-      state.history.splice(action.payload, 1);
+    add(state, action: PayloadAction<ConnectionI>) {
+      state.connections.push(action.payload);
     },
 
-    addMessage(state, action: PayloadAction<{ index: number, data: string }>) {
-      const index = action.payload.index;
-      const currentConnection = state.history[index];
-
-      if (currentConnection.messages) {
-        currentConnection.messages += "\n\n";
-      }
-
-      currentConnection.messages += action.payload.data;
+    edit(state, action: PayloadAction<{ index: number, data: ConnectionI }>) {
+      const { index, data } = action.payload;
+      state.connections[index] = data;
     },
 
-    changeActiveConnection(state, action: PayloadAction<number>) {
-      state.activeConnection = action.payload;
-    }
+    remove(state, action: PayloadAction<number>) {
+      state.connections.splice(action.payload, 1);
+    },
 
   }
 });
 
-export const connectionReducer = connectionSlice.reducer;
+export const connectionsReducer = connectionsSlice.reducer;

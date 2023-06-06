@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { findIndex } from "lodash";
+import React, { useEffect, useState } from "react";
 import { v4 as randomUUID } from "uuid";
+import { enqueueSnackbar } from "notistack";
 
 import { useModalClose } from "renderer/hooks/modals";
 
@@ -7,13 +9,15 @@ import ModalBase from "renderer/modals/Base";
 import Button from "renderer/ui/Button";
 import Input from "renderer/ui/Input";
 
-import style from "./index.module.scss";
-import { enqueueSnackbar } from "notistack";
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { groupsSlice } from "renderer/store/reducers/groups/slice";
-import { findIndex } from "lodash";
+
+import { GroupI } from "renderer/types/groups";
+
+import style from "./index.module.scss";
 
 interface IProps {
+  data?: GroupI,
   isVisible: boolean;
   onClose(): void
 }
@@ -28,7 +32,16 @@ export default function CreateGroup(props: IProps) {
 
   const [name, setName] = useState("");
 
-  const close = useModalClose(() => setName(""), onClose);
+  const isUpdate = !!props.data;
+
+  useEffect(() => {
+    if (!props.data) {
+      setName("");
+      return;
+    }
+
+    setName(props.data.name);
+  }, [props.data]);
 
   const createGroup = () => {
     if (name.length === 0) {
@@ -40,31 +53,40 @@ export default function CreateGroup(props: IProps) {
       return;
     }
 
-    const groupIndex = findIndex(groups, { name });
+    if (isUpdate) {
+      const index = findIndex(groups, { id: props.data?.id });
 
-    if (groupIndex !== -1) {
-      enqueueSnackbar({
-        message: "Такая группа уже существует",
-        variant: "error"
-      });
-
-      return;
+      dispatch(groupsSlice.actions.edit({
+        index,
+        data: {
+          ...props.data!,
+          name
+        }
+      }));
+    } else {
+      dispatch(groupsSlice.actions.add({
+        id: randomUUID(),
+        name
+      }));
     }
 
-    dispatch(groupsSlice.actions.add({
-      id: randomUUID(),
-      name
-    }));
+    onClose();
+  };
 
-    close();
+  const removeGroup = () => {
+    const index = findIndex(groups, { id: props.data?.id });
+
+    dispatch(groupsSlice.actions.remove(index));
+
+    onClose();
   };
 
   return (
     <ModalBase
       className={style.createGroup}
-      title="Создание группы"
+      title={`${isUpdate ? "Изменение" : "Создание"} группы`}
       isVisible={isVisible}
-      onClose={close}
+      onClose={onClose}
     >
       <Input
         name="name"
@@ -74,7 +96,10 @@ export default function CreateGroup(props: IProps) {
         onChange={(e) => setName(e.currentTarget.value)}
       />
       <div className={style.createGroup__action}>
-        <Button onClick={createGroup}>Создать</Button>
+        {isUpdate && (
+          <Button appearance="destructive" onClick={removeGroup}>Удалить</Button>
+        )}
+        <Button onClick={createGroup}>{isUpdate ? "Изменить" : "Создать"}</Button>
       </div>
     </ModalBase>
   );
