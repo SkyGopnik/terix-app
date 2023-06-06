@@ -38,7 +38,7 @@ export default function MainPage() {
         messages: "",
         commands: []
       })),
-      dispatch(connectionSlice.actions.changeActiveConnection(history.length !== 0 ? (history.length - 1) : 0))
+      dispatch(connectionSlice.actions.changeActiveConnection(history.length))
     ]);
 
     await navigate("/console");

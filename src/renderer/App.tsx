@@ -34,6 +34,10 @@ export default function App() {
       return;
     }
 
+    if (groups.length === 0) {
+      return;
+    }
+
     localStorage.setItem("groups", JSON.stringify(groups));
   }, [groups]);
 

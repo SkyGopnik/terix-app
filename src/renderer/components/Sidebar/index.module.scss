@@ -44,10 +44,10 @@
 
         &::before {
           width: calc(100% + 8px * 2);
-          height: calc(100% + 12px * 2);
+          height: calc(100% + 10px * 2);
 
           position: absolute;
-          top: -12px;
+          top: -10px;
           left: -8px;
 
           content: "";
@@ -61,12 +61,6 @@
           border-radius: 8px;
 
           background: #242454;
-        }
-
-        &:hover {
-          &::before {
-            opacity: 1;
-          }
         }
 
         &Actve {
@@ -84,6 +78,40 @@
 
         span {
           z-index: 15;
+        }
+
+        .menuItem {
+          &__small {
+            margin-left: 4px;
+
+            font-size: 12px;
+
+            opacity: .7;
+          }
+
+          &__remove {
+            width: 16px;
+            height: 16px;
+
+            position: absolute;
+            right: 0;
+
+            opacity: 0;
+
+            transition: opacity .3s ease;
+          }
+        }
+
+        &:hover {
+          .menuItem {
+            &__remove {
+              opacity: 1;
+            }
+          }
+
+          &::before {
+            opacity: .6;
+          }
         }
       }
     }

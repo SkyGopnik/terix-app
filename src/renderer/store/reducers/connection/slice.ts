@@ -20,6 +20,10 @@ export const connectionSlice = createSlice({
       state.history = [...state.history, action.payload];
     },
 
+    removeConnection(state, action: PayloadAction<number>) {
+      state.history.splice(action.payload, 1);
+    },
+
     addMessage(state, action: PayloadAction<{ index: number, data: string }>) {
       const index = action.payload.index;
       state.history[index].messages += "\n\n" + action.payload.data;
