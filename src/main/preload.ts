@@ -18,6 +18,18 @@ const electronHandler = {
 
     sshExecute(command: string): Promise<string> {
       return ipcRenderer.invoke(IpcChannels.app.sshExecute, command);
+    },
+
+    getDirectoriesAndFiles(source: string): Promise<Array<string>> {
+      return ipcRenderer.invoke(IpcChannels.app.getDirectoriesAndFiles, source);
+    },
+
+    getDisks(): Promise<Array<string>> {
+      return ipcRenderer.invoke(IpcChannels.app.getDisks);
+    },
+
+    isDirectory(path: string): Promise<boolean> {
+      return ipcRenderer.invoke(IpcChannels.app.isDirectory, path);
     }
 
   }

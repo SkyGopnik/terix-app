@@ -79,16 +79,16 @@ export default function Sidebar({ children }: {
               />
             </div>
           ))}
-          {/*<Link*/}
-          {/*  className={classNames(*/}
-          {/*    style.menu__item,*/}
-          {/*    checkActive("/ssh") && style.menu__itemActve*/}
-          {/*  )}*/}
-          {/*  to="/ssh"*/}
-          {/*>*/}
-          {/*  <img src={SftpIcon} alt="" />*/}
-          {/*  <span>SFTP</span>*/}
-          {/*</Link>*/}
+          <Link
+            className={classNames(
+              style.menu__item,
+              checkActive("/ssh") && style.menu__itemActve
+            )}
+            to="/sftp"
+          >
+            <img src={SftpIcon} alt="" />
+            <span>SFTP</span>
+          </Link>
           {/*<div className={style.menu__item}>*/}
           {/*  <img src={HistoryIcon} alt="" />*/}
           {/*  <span>History</span>*/}

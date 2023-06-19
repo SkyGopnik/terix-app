@@ -4,16 +4,16 @@ import { MemoryRouter as Router, Route, Routes } from "react-router-dom";
 import Sidebar from "renderer/components/Sidebar";
 
 import MainPage from "renderer/pages/Main";
-import SshPage from "renderer/pages/Ssh";
+import SftpPage from "renderer/pages/Sftp";
 import ConsolePage from "renderer/pages/Console";
 
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { useFirstRender } from "renderer/hooks/useFirstRender";
 
 import { groupsSlice } from "renderer/store/reducers/groups/slice";
+import { connectionsSlice } from "renderer/store/reducers/connections/slice";
 
 import "./App.scss";
-import { connectionsSlice } from "renderer/store/reducers/connections/slice";
 
 export default function App() {
 
@@ -49,7 +49,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={(<Sidebar><MainPage /></Sidebar>)} />
-        <Route path="/ssh" element={(<Sidebar><SshPage /></Sidebar>)} />
+        <Route path="/sftp" element={(<Sidebar><SftpPage /></Sidebar>)} />
         <Route path="/console" element={(<Sidebar><ConsolePage /></Sidebar>)} />
       </Routes>
     </Router>
