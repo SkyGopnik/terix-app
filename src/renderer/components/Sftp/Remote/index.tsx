@@ -1,40 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 
 import RenderFolder from "renderer/components/Sftp/Render/Folder";
 import RenderFile from "renderer/components/Sftp/Render/File";
 
-import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
+import { appSlice } from "renderer/store/reducers/app/slice";
 
-import style from "./index.module.scss";
-import EditIcon from "@icons/edit.svg";
 import HostItemIcon from "@icons/host_item.svg";
-import CreatehostPlaceholder from "@images/createhost_placeholder.png";
+
 import { GroupI } from "renderer/types/groups";
 import { ConnectionI } from "renderer/types/connection";
-import Loading from "renderer/components/Loading";
-import { appSlice } from "renderer/store/reducers/app/slice";
+
+import style from "./index.module.scss";
+import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
+
+interface IProps {
+  update: number,
+  localPath: string | undefined,
+  onMove(): void,
+  onPathChange(path: string): void
+}
 
 interface ElementItem {
   name: string,
   isDirectory: boolean
 }
 
-export default function RemoteSftp() {
+export default function RemoteSftp({ update, localPath, onMove, onPathChange }: IProps) {
 
   const { groups } = useAppSelector((state) => state.groupsReducer);
   const { connections } = useAppSelector((state) => state.connectionsReducer);
-  const { activeConnection, history } = useAppSelector((state) => state.connectionReducer);
 
   const dispatch = useAppDispatch();
 
-  const [path, setPath] = useState<string>("/");
+  const [path, setPath] = useState<string>();
   const [connected, setConnected] = useState<boolean>(false);
 
   const [elements, setElements] = useState<Array<ElementItem>>();
 
+  useEffect(() => {
+    onPathChange(path!);
+  }, [path]);
+
+  useAsyncEffect(async () => {
+    if (!path) {
+      return;
+    }
+
+    await getElements(path);
+  }, [update]);
+
   const getElements = async (path: string) => {
+    dispatch(appSlice.actions.setLoading(true));
+
     try {
       let elements: Array<ElementItem> = (await window.electron.app.sftpList(path)).map((item) => ({
         name: item.name,
@@ -52,6 +71,8 @@ export default function RemoteSftp() {
         variant: "error"
       });
     }
+
+    dispatch(appSlice.actions.setLoading(false));
   };
 
   const goBack = async () => {
@@ -91,6 +112,7 @@ export default function RemoteSftp() {
       await window.electron.app.connectSFTP(host, port, login, password);
       await getElements("/");
 
+      setPath("/");
       setConnected(true);
     } catch (e) {
       console.log(e);
@@ -102,6 +124,18 @@ export default function RemoteSftp() {
     }
 
     dispatch(appSlice.actions.setLoading(false));
+  };
+
+  const move = async (name: string) => {
+    dispatch(appSlice.actions.setLoading(true));
+
+    try {
+      await window.electron.app.sftpTransferGet(path + name, localPath + name);
+
+      onMove();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   if (connected) {
@@ -118,11 +152,13 @@ export default function RemoteSftp() {
             key={name}
             name={name}
             onDoubleClick={() => goPath(name)}
+            onMoveClick={() => move(name)}
           />
         ) : (
           <RenderFile
             key={name}
             name={name}
+            onMoveClick={() => move(name)}
           />
         ))}
       </div>

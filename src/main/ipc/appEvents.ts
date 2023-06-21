@@ -2,6 +2,7 @@ import { ipcMain, shell } from "electron";
 import { NodeSSH } from "node-ssh";
 import SFTP from "ssh2-sftp-client";
 import { readdir, lstat } from 'fs/promises';
+import fs from "fs";
 
 const nodeDiskInfo = require('node-disk-info');
 
@@ -43,6 +44,14 @@ ipcMain.handle("sftp:connect", async (_, { host, port, login, password }) => {
 
 ipcMain.handle("sftp:list", async (_, path) => {
   return sftp.list(path);
+});
+
+ipcMain.handle("sftp:transfer_put", async (_, { localPath, remotePath }) => {
+  return sftp.put(localPath, remotePath);
+});
+
+ipcMain.handle("sftp:transfer_get", async (_, { remotePath, localPath }) => {
+  return sftp.get(remotePath, localPath);
 });
 
 ipcMain.handle("pc:get_directories_and_files", async (_, source) => {

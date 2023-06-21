@@ -8,7 +8,9 @@ export const IpcChannels = {
     getDisks: "pc:get_disks",
     isDirectory: "pc:is_directory",
     connectSFTP: "sftp:connect",
-    sftpList: "sftp:list"
+    sftpList: "sftp:list",
+    sftpTransferPut: "sftp:transfer_put",
+    sftpTransferGet: "sftp:transfer_get"
   }
 
 };

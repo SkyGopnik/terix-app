@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
 import { classNames } from "renderer/utils/classNames";
@@ -7,14 +7,25 @@ import RenderFolder from "renderer/components/Sftp/Render/Folder";
 import RenderFile from "renderer/components/Sftp/Render/File";
 
 import style from "./index.module.scss";
+import { useAppDispatch } from "renderer/hooks/redux";
+import { appSlice } from "renderer/store/reducers/app/slice";
+
+interface IProps {
+  update: number,
+  remotePath: string,
+  onMove(): void
+  onPathChange(path: string | undefined): void
+}
 
 interface ElementItem {
   name: string,
   isDirectory: boolean
 }
 
-export default function LocalSftp() {
+export default function LocalSftp({ update, remotePath, onMove, onPathChange }: IProps) {
   const divider = useMemo(() => window.electron.app.getDivider(), []);
+
+  const dispatch = useAppDispatch();
 
   const [path, setPath] = useState<string>();
 
@@ -25,6 +36,21 @@ export default function LocalSftp() {
     const data = await window.electron.app.getDisks();
     setDisks(data);
   }, []);
+
+  useEffect(() => {
+    onPathChange(path);
+  }, [path]);
+
+  useAsyncEffect(async () => {
+    if (!path) {
+      return;
+    }
+
+    const data = await window.electron.app.getDirectoriesAndFiles(path);
+    const elements = await getElements(data, path);
+
+    setElements(elements);
+  }, [update]);
 
   const getElements = async (data: Array<string>, path: string) => {
     let elements: Array<ElementItem> = [];
@@ -81,6 +107,18 @@ export default function LocalSftp() {
     setPath(directory);
   };
 
+  const move = async (name: string) => {
+    dispatch(appSlice.actions.setLoading(true));
+
+    try {
+      await window.electron.app.sftpTransferPut(path + name, remotePath + name);
+
+      onMove();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className={classNames(style.elements, style.elementsLocal)}>
       {path && (
@@ -95,11 +133,13 @@ export default function LocalSftp() {
             key={name}
             name={name}
             onDoubleClick={() => goPath(name)}
+            onMoveClick={() => move(name)}
           />
         ) : (
           <RenderFile
             key={name}
             name={name}
+            onMoveClick={() => move(name)}
           />
         ))
       ) : (

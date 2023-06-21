@@ -42,6 +42,14 @@ const electronHandler = {
       return ipcRenderer.invoke(IpcChannels.app.sftpList, path);
     },
 
+    sftpTransferPut(localPath: string, remotePath: string): Promise<string> {
+      return ipcRenderer.invoke(IpcChannels.app.sftpTransferPut, { localPath, remotePath });
+    },
+
+    sftpTransferGet(remotePath: string, localPath: string): Promise<string> {
+      return ipcRenderer.invoke(IpcChannels.app.sftpTransferGet, { remotePath, localPath });
+    },
+
     getDivider() {
       const { platform } = process;
 

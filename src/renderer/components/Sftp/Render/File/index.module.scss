@@ -26,4 +26,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &__move {
+    width: 16px;
+    height: 16px;
+
+    margin-left: auto;
+  }
 }
