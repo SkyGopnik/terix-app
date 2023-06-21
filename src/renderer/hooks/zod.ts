@@ -64,7 +64,7 @@ export function useZodForm<TSchema extends ZodType>(
       [name]: value
     });
 
-  }
+  };
 
   const onInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     validateForm(event.target.name);

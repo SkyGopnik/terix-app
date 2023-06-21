@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import HostIcon from "@icons/host.svg";
+import GroupIcon from "@icons/group.svg";
+import HostItemIcon from "@icons/host_item.svg";
+import EditIcon from "@icons/edit.svg";
+
 import CreatehostPlaceholder from "@images/createhost_placeholder.png";
 
 import CreateGroup from "renderer/modals/CreateGroup";
 import CreateConnection from "renderer/modals/CreateConnection";
 
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
-import { connectionSlice } from "renderer/store/reducers/connection/slice";
-
-import HostIcon from "@icons/host.svg";
-import GroupIcon from "@icons/group.svg";
-import HostItemIcon from "@icons/host_item.svg";
-import EditIcon from "@icons/edit.svg";
-
-import { ConnectionI } from "renderer/types/connection";
-import { GroupI } from "renderer/types/groups";
 
 import style from "./index.module.scss";
+import { ConnectionI } from "renderer/types/connection";
+import { connectionSlice } from "renderer/store/reducers/connection/slice";
+import { GroupI } from "renderer/types/groups";
+import Login from "renderer/modals/Auth/Login";
+import Register from "renderer/modals/Auth/Register";
 
 export default function MainPage() {
 
@@ -158,16 +159,22 @@ export default function MainPage() {
           )}
         </div>
       </div>
+
       <CreateGroup
         data={editGroupData}
         isVisible={createGroupVisible}
         onClose={() => setCreateGroupVisible(false)}
       />
+
       <CreateConnection
         data={editConnectionData}
         isVisible={createConnectionVisible}
         onClose={() => setCreateConnectionVisible(false)}
       />
+
+      <Login />
+      <Register />
+
     </>
   );
 }
