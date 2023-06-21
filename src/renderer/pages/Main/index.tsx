@@ -17,6 +17,8 @@ import style from "./index.module.scss";
 import { ConnectionI } from "renderer/types/connection";
 import { connectionSlice } from "renderer/store/reducers/connection/slice";
 import { GroupI } from "renderer/types/groups";
+import Login from "renderer/modals/Auth/Login";
+import Register from "renderer/modals/Auth/Register";
 
 export default function MainPage() {
 
@@ -157,16 +159,22 @@ export default function MainPage() {
           )}
         </div>
       </div>
+
       <CreateGroup
         data={editGroupData}
         isVisible={createGroupVisible}
         onClose={() => setCreateGroupVisible(false)}
       />
+
       <CreateConnection
         data={editConnectionData}
         isVisible={createConnectionVisible}
         onClose={() => setCreateConnectionVisible(false)}
       />
+
+      <Login />
+      <Register />
+
     </>
   );
 }
