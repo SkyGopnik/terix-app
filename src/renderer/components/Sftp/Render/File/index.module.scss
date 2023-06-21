@@ -1,0 +1,29 @@
+.item {
+  padding: 5px 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: background .3s ease;
+
+  &:hover {
+    background: rgba(#000000, .1);
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

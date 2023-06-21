@@ -1,0 +1,35 @@
+.elements {
+  height: 100vh;
+
+  overflow-y: auto;
+
+  &__item {
+    padding: 5px 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: background .3s ease;
+
+    &:hover {
+      background: rgba(#000000, .1);
+    }
+
+    .item__icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .item__text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

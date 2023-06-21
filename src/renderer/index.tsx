@@ -1,7 +1,7 @@
+import axios from "axios";
 import { SnackbarProvider } from "notistack";
 import { createRoot } from "react-dom/client";
 
-import axios from "axios";
 import config from "renderer/config";
 
 import { SkeletonTheme } from "react-loading-skeleton";

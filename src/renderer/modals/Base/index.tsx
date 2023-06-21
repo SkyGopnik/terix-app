@@ -45,19 +45,12 @@ export default function ModalBase(props: ModalProps) {
     };
   }, []);
 
-  const test = async () => {
-    // await window.electron.app.connectSSH();
-    //
-    //   console.log(await window.electron.app.sshExecute('ls'));
-  };
-
   return (
     <div
       className={classNames(
         style.wrapper,
         !isVisible && style.wrapperHidden
       )}
-      onClick={test}
     >
       <div
         className={classNames(

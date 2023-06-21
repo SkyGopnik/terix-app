@@ -7,6 +7,8 @@ export const IpcChannels = {
     getDirectoriesAndFiles: "pc:get_directories_and_files",
     getDisks: "pc:get_disks",
     isDirectory: "pc:is_directory",
+    connectSFTP: "sftp:connect",
+    sftpList: "sftp:list"
   }
 
 };

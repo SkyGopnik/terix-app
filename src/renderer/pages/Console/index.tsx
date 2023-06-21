@@ -1,3 +1,4 @@
+import { enqueueSnackbar } from "notistack";
 import React, { useEffect, useRef, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
@@ -12,7 +13,7 @@ export default function ConsolePage() {
   const { activeConnection, history } = useAppSelector((state) => state.connectionReducer);
 
   const [command, setCommand] = useState("");
-  const console = useRef<HTMLDivElement>(null);
+  const consoleRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
 
@@ -27,18 +28,27 @@ export default function ConsolePage() {
 
     const { host, port, login, password } = history[activeConnection];
 
-    await window.electron.app.connectSSH(host, port, login, password);
+    try {
+      await window.electron.app.connectSSH(host, port, login, password);
 
-    const data = await window.electron.app.sshExecute("run-parts /etc/update-motd.d/");
-    dispatch(connectionSlice.actions.addMessage({ index: activeConnection, data }))
+      const data = await window.electron.app.sshExecute("run-parts /etc/update-motd.d/");
+      dispatch(connectionSlice.actions.addMessage({ index: activeConnection, data }))
+    } catch (e) {
+      console.log(e);
+
+      enqueueSnackbar({
+        message: "Произошла ошибка при подключении",
+        variant: "error"
+      });
+    }
   }, []);
 
   useEffect(() => {
-    if (!console?.current) {
+    if (!consoleRef?.current) {
       return;
     }
 
-    console.current.scrollTop = console.current.scrollHeight;
+    consoleRef.current.scrollTop = consoleRef.current.scrollHeight;
   }, [history[activeConnection!]]);
 
   const onKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -60,7 +70,7 @@ export default function ConsolePage() {
 
   return (
     <div className={style.console}>
-      <div className={style.consoleMessage} ref={console}>
+      <div className={style.consoleMessage} ref={consoleRef}>
         {connection.messages}
       </div>
       <label className={style.consoleWritebar}>

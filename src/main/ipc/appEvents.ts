@@ -1,10 +1,12 @@
 import { ipcMain, shell } from "electron";
 import { NodeSSH } from "node-ssh";
+import SFTP from "ssh2-sftp-client";
 import { readdir, lstat } from 'fs/promises';
 
 const nodeDiskInfo = require('node-disk-info');
 
 const ssh = new NodeSSH();
+const sftp = new SFTP();
 
 ipcMain.on("app:open_link", (_, link) => {
   shell.openExternal(link)
@@ -26,6 +28,21 @@ ipcMain.handle("ssh:execute", async (_, command) => {
   const result = await ssh.execCommand(command);
 
   return result.stdout || result.stderr;
+});
+
+ipcMain.handle("sftp:connect", async (_, { host, port, login, password }) => {
+  await sftp.end();
+
+  await sftp.connect({
+    host,
+    port,
+    username: login,
+    password
+  });
+});
+
+ipcMain.handle("sftp:list", async (_, path) => {
+  return sftp.list(path);
 });
 
 ipcMain.handle("pc:get_directories_and_files", async (_, source) => {

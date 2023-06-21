@@ -1,9 +1,7 @@
 import { findIndex } from "lodash";
-import React, { useEffect, useState } from "react";
 import { v4 as randomUUID } from "uuid";
 import { enqueueSnackbar } from "notistack";
-
-import { useModalClose } from "renderer/hooks/modals";
+import React, { useEffect, useState } from "react";
 
 import ModalBase from "renderer/modals/Base";
 import Button from "renderer/ui/Button";
@@ -64,6 +62,17 @@ export default function CreateGroup(props: IProps) {
         }
       }));
     } else {
+      const groupIndex = findIndex(groups, { name });
+
+      if (groupIndex !== -1) {
+        enqueueSnackbar({
+          message: "Группа уже существует",
+          variant: "error"
+        });
+
+        return;
+      }
+
       dispatch(groupsSlice.actions.add({
         id: randomUUID(),
         name
