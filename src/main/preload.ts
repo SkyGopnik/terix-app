@@ -40,6 +40,16 @@ const electronHandler = {
       name: string
     }>> {
       return ipcRenderer.invoke(IpcChannels.app.sftpList, path);
+    },
+
+    getDivider() {
+      const { platform } = process;
+
+      if (platform === "win32") {
+        return "\\";
+      } else {
+        return "/";
+      }
     }
 
   }

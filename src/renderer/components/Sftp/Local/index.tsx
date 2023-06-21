@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
 import { classNames } from "renderer/utils/classNames";
@@ -14,6 +14,8 @@ interface ElementItem {
 }
 
 export default function LocalSftp() {
+  const divider = useMemo(() => window.electron.app.getDivider(), []);
+
   const [path, setPath] = useState<string>();
 
   const [disks, setDisks] = useState<Array<string>>();
@@ -46,7 +48,7 @@ export default function LocalSftp() {
   };
 
   const goBack = async () => {
-    const splitPath = path?.split("\\");
+    const splitPath = path?.split(divider);
 
     if (!splitPath) {
       return;
@@ -54,9 +56,9 @@ export default function LocalSftp() {
 
     splitPath.length -= 2;
 
-    const prevPath = splitPath.join("\\") + "\\";
+    const prevPath = splitPath.join(divider) + divider;
 
-    if (prevPath === "\\") {
+    if (prevPath === divider) {
       setPath(undefined);
 
       return;
@@ -70,7 +72,7 @@ export default function LocalSftp() {
   };
 
   const goPath = async (folder: string) => {
-    const directory = (path ? (path + folder) : folder) + "\\";
+    const directory = (path ? (path + folder) : folder) + divider;
 
     const data = await window.electron.app.getDirectoriesAndFiles(directory);
     const elements = await getElements(data, directory);
