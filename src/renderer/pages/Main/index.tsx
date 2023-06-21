@@ -10,15 +10,16 @@ import CreatehostPlaceholder from "@images/createhost_placeholder.png";
 
 import CreateGroup from "renderer/modals/CreateGroup";
 import CreateConnection from "renderer/modals/CreateConnection";
-
-import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
-
-import style from "./index.module.scss";
-import { ConnectionI } from "renderer/types/connection";
-import { connectionSlice } from "renderer/store/reducers/connection/slice";
-import { GroupI } from "renderer/types/groups";
 import Login from "renderer/modals/Auth/Login";
 import Register from "renderer/modals/Auth/Register";
+
+import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
+import { connectionSlice } from "renderer/store/reducers/connection/slice";
+
+import { ConnectionI } from "renderer/types/connection";
+import { GroupI } from "renderer/types/groups";
+
+import style from "./index.module.scss";
 
 export default function MainPage() {
 
