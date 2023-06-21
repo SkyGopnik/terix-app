@@ -7,6 +7,7 @@ import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
 import { connectionSlice } from "renderer/store/reducers/connection/slice";
 
 import style from "./index.module.scss";
+import { appSlice } from "renderer/store/reducers/app/slice";
 
 export default function ConsolePage() {
 
@@ -32,7 +33,7 @@ export default function ConsolePage() {
       await window.electron.app.connectSSH(host, port, login, password);
 
       const data = await window.electron.app.sshExecute("run-parts /etc/update-motd.d/");
-      dispatch(connectionSlice.actions.addMessage({ index: activeConnection, data }))
+      dispatch(connectionSlice.actions.addMessage({ index: activeConnection, data }));
     } catch (e) {
       console.log(e);
 
@@ -41,6 +42,8 @@ export default function ConsolePage() {
         variant: "error"
       });
     }
+
+    dispatch(appSlice.actions.setLoading(false));
   }, []);
 
   useEffect(() => {

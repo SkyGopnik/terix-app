@@ -97,7 +97,10 @@ export default function LocalSftp() {
             onDoubleClick={() => goPath(name)}
           />
         ) : (
-          <RenderFile key={name} name={name} />
+          <RenderFile
+            key={name}
+            name={name}
+          />
         ))
       ) : (
         disks?.map((disk) => (

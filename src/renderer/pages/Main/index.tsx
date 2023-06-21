@@ -20,6 +20,7 @@ import { ConnectionI } from "renderer/types/connection";
 import { GroupI } from "renderer/types/groups";
 
 import style from "./index.module.scss";
+import { appSlice } from "renderer/store/reducers/app/slice";
 
 export default function MainPage() {
 
@@ -37,6 +38,8 @@ export default function MainPage() {
   const [createConnectionVisible, setCreateConnectionVisible] = useState(false);
 
   const connectSSH = async (connection: ConnectionI) => {
+    dispatch(appSlice.actions.setLoading(true));
+
     await Promise.all([
       dispatch(connectionSlice.actions.addConnection({
         ...connection,
@@ -70,11 +73,6 @@ export default function MainPage() {
   return (
     <>
       <div className={style.page}>
-        <input
-          className={style.search}
-          type="text"
-          placeholder="Поиск"
-        />
         <div className={style.actions}>
           {groups.length !== 0 && (
             <button

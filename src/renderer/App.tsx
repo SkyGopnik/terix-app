@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { MemoryRouter as Router, Route, Routes } from "react-router-dom";
 
 import Sidebar from "renderer/components/Sidebar";
+import Loading from "renderer/components/Loading";
 
 import MainPage from "renderer/pages/Main";
 import SftpPage from "renderer/pages/Sftp";
@@ -17,6 +18,7 @@ import "./App.scss";
 
 export default function App() {
 
+  const { loading } = useAppSelector((state) => state.appReducer);
   const { groups } = useAppSelector((state) => state.groupsReducer);
   const { connections } = useAppSelector((state) => state.connectionsReducer);
 
@@ -46,12 +48,15 @@ export default function App() {
   }, [groups, connections]);
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={(<Sidebar><MainPage /></Sidebar>)} />
-        <Route path="/sftp" element={(<Sidebar><SftpPage /></Sidebar>)} />
-        <Route path="/console" element={(<Sidebar><ConsolePage /></Sidebar>)} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={(<Sidebar><MainPage /></Sidebar>)} />
+          <Route path="/sftp" element={(<Sidebar><SftpPage /></Sidebar>)} />
+          <Route path="/console" element={(<Sidebar><ConsolePage /></Sidebar>)} />
+        </Routes>
+      </Router>
+      <Loading hidden={!loading} />
+    </>
   );
 }
