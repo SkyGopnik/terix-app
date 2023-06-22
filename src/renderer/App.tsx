@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { MemoryRouter as Router, Route, Routes } from "react-router-dom";
 
 import Sidebar from "renderer/components/Sidebar";
@@ -8,6 +8,9 @@ import MainPage from "renderer/pages/Main";
 import SftpPage from "renderer/pages/Sftp";
 import ConsolePage from "renderer/pages/Console";
 
+import Login from "renderer/modals/Auth/Login";
+import Register from "renderer/modals/Auth/Register";
+
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { useFirstRender } from "renderer/hooks/useFirstRender";
 
@@ -15,6 +18,9 @@ import { groupsSlice } from "renderer/store/reducers/groups/slice";
 import { connectionsSlice } from "renderer/store/reducers/connections/slice";
 
 import "./App.scss";
+import { useAsyncEffect } from "renderer/hooks/useAsyncEffect";
+import axios from "axios";
+import { userSlice } from "renderer/store/reducers/user/slice";
 
 export default function App() {
 
@@ -47,6 +53,27 @@ export default function App() {
     }));
   }, [groups, connections]);
 
+  useAsyncEffect(async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return;
+    }
+
+    axios.defaults.headers["authorization"] = token;
+
+    try {
+      const { data } = await axios.get("/user/profile");
+
+      dispatch(userSlice.actions.setUser(data));
+    } catch (e) {
+      console.log(e);
+
+      localStorage.removeItem("token");
+      delete axios.defaults.headers["authorization"];
+    }
+  }, []);
+
   return (
     <>
       <Router>
@@ -56,6 +83,10 @@ export default function App() {
           <Route path="/console" element={(<Sidebar><ConsolePage /></Sidebar>)} />
         </Routes>
       </Router>
+
+      <Login />
+      <Register />
+
       <Loading hidden={!loading} />
     </>
   );

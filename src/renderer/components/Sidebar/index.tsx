@@ -12,11 +12,14 @@ import ActiveHostIcon from "@icons/active_host.svg";
 import RemoveIcon from "@icons/close.svg";
 
 import style from "./index.module.scss";
+import Button from "renderer/ui/Button";
+import { authSlice } from "renderer/store/reducers/auth/slice";
 
 export default function Sidebar({ children }: {
   children: ReactNode
 }) {
   const { history, activeConnection } = useAppSelector((state) => state.connectionReducer);
+  const { user } = useAppSelector((state) => state.userReducer);
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -93,6 +96,17 @@ export default function Sidebar({ children }: {
           {/*  <img src={HistoryIcon} alt="" />*/}
           {/*  <span>History</span>*/}
           {/*</div>*/}
+        </div>
+        <div className={style.sidebar__actions}>
+          <Button
+            className={style.action__button}
+            onClick={() => {
+              dispatch(authSlice.actions.setVisible(true));
+              dispatch(authSlice.actions.setPage("login"));
+            }}
+          >
+            Войти
+          </Button>
         </div>
       </div>
       <div className={style.content}>

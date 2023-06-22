@@ -32,7 +32,7 @@ export default function AuthBase(props: IProps) {
 
   const { page, actionName, isVisible } = props;
 
-  const { formData, validateForm, onInputChange } = useZodForm(schema, {
+  const { formData, validateForm, setFormData, onInputChange } = useZodForm(schema, {
     email: "",
     password: ""
   });
@@ -60,6 +60,11 @@ export default function AuthBase(props: IProps) {
       return;
     }
 
+    setFormData({
+      email: "",
+      password: ""
+    });
+
     props.onSubmit(formData);
 
   };
@@ -85,7 +90,7 @@ export default function AuthBase(props: IProps) {
             )}
             onClick={() => changePage("login")}
           >
-            <p className={style.item__label}>Sign in</p>
+            <p className={style.item__label}>Авторизация</p>
           </div>
 
           <div
@@ -95,7 +100,7 @@ export default function AuthBase(props: IProps) {
             )}
             onClick={() => changePage("register")}
           >
-            <p className={style.item__label}>Sign in</p>
+            <p className={style.item__label}>Регистрация</p>
           </div>
 
         </div>
@@ -112,8 +117,9 @@ export default function AuthBase(props: IProps) {
 
           <Input
             name="password"
-            caption="Password"
-            placeholder="Password"
+            caption="Пароль"
+            type="password"
+            placeholder="Пароль"
             value={formData["password"]}
             onChange={onInputChange}
           />

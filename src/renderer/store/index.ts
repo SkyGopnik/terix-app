@@ -6,13 +6,15 @@ import { connectionReducer } from "renderer/store/reducers/connection/slice";
 import { connectionsReducer } from "renderer/store/reducers/connections/slice";
 import { authReducer } from "renderer/store/reducers/auth/slice";
 import { appReducer } from "renderer/store/reducers/app/slice";
+import { userReducer } from "renderer/store/reducers/user/slice";
 
 const rootReducer = combineReducers({
   groupsReducer,
   connectionReducer,
   connectionsReducer,
   authReducer,
-  appReducer
+  appReducer,
+  userReducer
 });
 
 export const setupStore = () => {

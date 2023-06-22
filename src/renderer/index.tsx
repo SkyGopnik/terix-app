@@ -13,7 +13,6 @@ import "react-tooltip/dist/react-tooltip.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
 axios.defaults.baseURL = config.api.baseUrl;
-axios.defaults.headers.Authorization = "Bearer aZzCtpkQHeO4KxsU3NmP9mZYS3DC0KEf";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);

@@ -116,4 +116,12 @@
       }
     }
   }
+
+  &__actions {
+    margin-top: auto;
+
+    .action__button {
+      width: 100%;
+    }
+  }
 }

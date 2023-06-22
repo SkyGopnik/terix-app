@@ -10,8 +10,6 @@ import CreatehostPlaceholder from "@images/createhost_placeholder.png";
 
 import CreateGroup from "renderer/modals/CreateGroup";
 import CreateConnection from "renderer/modals/CreateConnection";
-import Login from "renderer/modals/Auth/Login";
-import Register from "renderer/modals/Auth/Register";
 
 import { useAppDispatch, useAppSelector } from "renderer/hooks/redux";
 import { connectionSlice } from "renderer/store/reducers/connection/slice";
@@ -170,9 +168,6 @@ export default function MainPage() {
         isVisible={createConnectionVisible}
         onClose={() => setCreateConnectionVisible(false)}
       />
-
-      <Login />
-      <Register />
 
     </>
   );

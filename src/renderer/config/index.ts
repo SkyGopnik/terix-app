@@ -1,6 +1,6 @@
 const config = {
   api: {
-    baseUrl: "http://localhost:1337"
+    baseUrl: "https://terix-api.skyreglis.com/"
   }
 };
 

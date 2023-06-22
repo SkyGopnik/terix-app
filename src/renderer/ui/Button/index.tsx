@@ -11,7 +11,7 @@ interface IProps extends ButtonProps {
 export default function Button(props: IProps) {
 
   return (
-    <button {...props} className={classNames(style.button, style[`buttonAppearance_${props.appearance}`])} />
+    <button {...props} className={classNames(style.button, style[`buttonAppearance_${props.appearance}`], props.className)} />
   );
 
 }
